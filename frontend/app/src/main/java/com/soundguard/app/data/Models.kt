@@ -15,11 +15,14 @@ enum class ModelType(val displayName: String, val fileName: String) {
 }
 
 data class DetectionResult(
-    val soundClass  : SoundClass = SoundClass.BACKGROUND,
-    val confidence  : Float      = 0f,
-    val inferenceMs : Int        = 0,
-    val model       : ModelType  = ModelType.BEST_MODEL,
-    val isEmergency : Boolean    = false
+    val soundClass  : SoundClass    = SoundClass.BACKGROUND,
+    val confidence  : Float         = 0f,
+    val inferenceMs : Int           = 0,
+    val model       : ModelType     = ModelType.BEST_MODEL,
+    val isEmergency : Boolean       = false,
+    // Real per-class scores from the model — Keras alphabetical order:
+    // [0]=Fire Alarm, [1]=Background (noise), [2]=Siren
+    val allScores   : FloatArray    = FloatArray(3)
 )
 
 data class AlertRecord(

@@ -161,23 +161,16 @@ fun MonitorScreen() {
 
                 Spacer(Modifier.height(12.dp))
 
-                ConfidenceBar(
-                    "Fire Alarm",
-                    if (det.soundClass == SoundClass.FIRE_ALARM) det.confidence else 0.03f,
-                    FireRed
-                )
+                // Real per-class scores — allScores order: [0]=Fire Alarm, [1]=Background, [2]=Siren
+                val fireScore  = if (det.allScores.size > 0) det.allScores[0] else 0f
+                val bgScore    = if (det.allScores.size > 1) det.allScores[1] else 0f
+                val sirenScore = if (det.allScores.size > 2) det.allScores[2] else 0f
+
+                ConfidenceBar("Fire Alarm",  fireScore,  FireRed)
                 Spacer(Modifier.height(6.dp))
-                ConfidenceBar(
-                    "Siren",
-                    if (det.soundClass == SoundClass.SIREN) det.confidence else 0.08f,
-                    SirenAmber
-                )
+                ConfidenceBar("Siren",       sirenScore, SirenAmber)
                 Spacer(Modifier.height(6.dp))
-                ConfidenceBar(
-                    "Background",
-                    if (det.soundClass == SoundClass.BACKGROUND) det.confidence else 0.05f,
-                    SafeGreen
-                )
+                ConfidenceBar("Background",  bgScore,    SafeGreen)
             } else {
                 Box(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
