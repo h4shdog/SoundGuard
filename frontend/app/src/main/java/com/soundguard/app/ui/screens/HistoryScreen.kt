@@ -80,18 +80,20 @@ fun HistoryScreen() {
                 }
             }
         } else {
+            // One shared player so only one clip plays at a time across all cards
+            val player = rememberSoundSamplePlayer()
+
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(filtered) { record ->
-                    HistoryCard(record)
+                    HistoryCard(record, player)
                 }
                 item { Spacer(Modifier.height(80.dp)) }
-            }
-        }
+            }        }
     }
 }
 
 @Composable
-fun HistoryCard(record: AlertRecord) {
+fun HistoryCard(record: AlertRecord, player: SoundSamplePlayer) {
     val isDark = isSystemDark()
     val (accentColor, chipBg, chipFg) = when (record.soundClass) {
         SoundClass.FIRE_ALARM  -> Triple(FireRed,    FireRedLight,    FireRed)
@@ -99,7 +101,14 @@ fun HistoryCard(record: AlertRecord) {
         SoundClass.BACKGROUND  -> Triple(TextTertiary, if (isDark) DarkSurfaceVar else SurfaceVar, TextSecondary)
     }
 
-    SgCard(modifier = Modifier.fillMaxWidth(), topAccentColor = accentColor) {
+    var expanded by remember { mutableStateOf(false) }
+
+    SgCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { expanded = !expanded },
+        topAccentColor = accentColor
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -152,20 +161,75 @@ fun HistoryCard(record: AlertRecord) {
                 }
             }
 
-            // Status chip
-            val (sBg, sFg, sText) = if (!record.dismissed)
-                Triple(SafeGreenBg, SafeGreen, "Confirmed")
-            else
-                Triple(if (isDark) DarkSurfaceVar else SurfaceVar, TextTertiary, "Dismissed")
+            // Status chip + expand chevron
+            Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                val (sBg, sFg, sText) = if (!record.dismissed)
+                    Triple(SafeGreenBg, SafeGreen, "Confirmed")
+                else
+                    Triple(if (isDark) DarkSurfaceVar else SurfaceVar, TextTertiary, "Dismissed")
 
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
-                    .background(sBg)
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(sText, style = MaterialTheme.typography.labelSmall, color = sFg, fontWeight = FontWeight.SemiBold)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(sBg)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(sText, style = MaterialTheme.typography.labelSmall, color = sFg, fontWeight = FontWeight.SemiBold)
+                }
+
+                Icon(
+                    if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    tint = TextTertiary,
+                    modifier = Modifier.size(16.dp)
+                )
             }
         }
+
+        // ── Expanded detail ────────────────────────────────
+        if (expanded) {
+            Spacer(Modifier.height(10.dp))
+            HorizontalDivider(color = if (isDark) DarkBorder else Border, thickness = 0.5.dp)
+            Spacer(Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                DetailStat("Confidence", "${(record.confidence * 100).toInt()}%", accentColor)
+                DetailStat("Inference", "${record.inferenceMs}ms", TextTertiary)
+                DetailStat("Model", record.model.displayName, Primary)
+                DetailStat("Record #", "#${record.id}", TextTertiary)
+            }
+
+            // ── Play Sample button (only for emergency sound classes) ──
+            // To enable: add fire_alarm.mp3 and siren.mp3 to res/raw/
+            if (record.soundClass != SoundClass.BACKGROUND) {
+                Spacer(Modifier.height(12.dp))
+
+                OutlinedButton(
+                    onClick = { /* add fire_alarm.mp3 / siren.mp3 to res/raw/ to enable */ },
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        disabledContentColor = TextTertiary
+                    ),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, TextTertiary.copy(alpha = 0.3f))
+                ) {
+                    Icon(Icons.Default.PlayArrow, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text("Play Sample", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailStat(label: String, value: String, valueColor: Color) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(value, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = valueColor)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = TextTertiary)
     }
 }

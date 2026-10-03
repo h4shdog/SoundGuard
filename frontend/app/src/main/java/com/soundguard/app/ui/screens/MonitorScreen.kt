@@ -18,9 +18,7 @@ import androidx.compose.ui.unit.*
 import com.soundguard.app.data.*
 import com.soundguard.app.service.SoundMonitorService
 import com.soundguard.app.ui.components.*
-import com.soundguard.app.ui.theme.*
-
-@Composable
+import com.soundguard.app.ui.theme.*@Composable
 fun MonitorScreen() {
     val isDark      = isSystemDark()
     val bg          = if (isDark) DarkBackground else Background
@@ -30,17 +28,6 @@ fun MonitorScreen() {
     // Observe repository state — recompose whenever they change
     val isRunning by remember { derivedStateOf { AlertRepository.isRunning } }
     val detection by remember { derivedStateOf { AlertRepository.current } }
-
-    // Trigger recomposition on every detection update via a tick counter
-    var tick by remember { mutableIntStateOf(0) }
-    LaunchedEffect(Unit) {
-        while (true) {
-            kotlinx.coroutines.delay(500)
-            tick++
-        }
-    }
-    // read tick so the compiler doesn't optimize it away
-    @Suppress("UNUSED_EXPRESSION") tick
 
     fun startService() {
         val intent = Intent(context, SoundMonitorService::class.java)

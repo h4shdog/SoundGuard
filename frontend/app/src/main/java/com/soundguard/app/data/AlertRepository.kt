@@ -1,6 +1,9 @@
 package com.soundguard.app.data
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -17,23 +20,23 @@ object AlertRepository {
     val history = mutableStateListOf<AlertRecord>()
 
     // ── Current detection (null = idle) ──────────────────────
-    var current: DetectionResult? = null
-        private set
+    private var _current by mutableStateOf<DetectionResult?>(null)
+    val current: DetectionResult? get() = _current
 
     // ── Service running state ─────────────────────────────────
-    var isRunning: Boolean = false
-        private set
+    private var _isRunning by mutableStateOf(false)
+    val isRunning: Boolean get() = _isRunning
 
     private var nextId = 1
 
     // ─────────────────────────────────────────────────────────
     fun setRunning(running: Boolean) {
-        isRunning = running
-        if (!running) current = null
+        _isRunning = running
+        if (!running) _current = null
     }
 
     fun postDetection(result: DetectionResult) {
-        current = result
+        _current = result
 
         // Only record emergency detections (fire alarm / siren) in history
         if (result.isEmergency) {
@@ -51,8 +54,8 @@ object AlertRepository {
 
     fun clear() {
         history.clear()
-        current  = null
-        isRunning = false
+        _current  = null
+        _isRunning = false
     }
 
     private fun formatNow(): String {
