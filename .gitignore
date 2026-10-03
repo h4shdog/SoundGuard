@@ -1,0 +1,28 @@
+# ── IDE ──────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.iml
+
+# ── Android / Gradle ─────────────────────────────────────────
+frontend/.gradle/
+frontend/app/build/
+frontend/build/
+frontend/local.properties
+frontend/.kotlin/
+*.apk
+*.aab
+*.keystore
+
+# ── macOS / Windows ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Backend (Python / Node — add more as needed) ─────────────
+__pycache__/
+*.pyc
+*.pyo
+*.env
+node_modules/
+venv/
+.venv/
+dist/
