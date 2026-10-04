@@ -500,7 +500,7 @@ class SoundMonitorService : Service() {
                          logMel[x1][y0] * dx     *(1-dy) +
                          logMel[x0][y1] * (1-dx) * dy    +
                          logMel[x1][y1] * dx      * dy
-                val ci = (((db + 80f) / 80f).coerceIn(0f, 1f) * 255f).toInt().coerceIn(0, 255)
+                val ci = (((db + 80f) / 80f).coerceIn(0f, 1f) * 255f).toInt().coerceIn(0, 254)
                 out.putFloat(MAGMA_R[ci].toFloat())
                 out.putFloat(MAGMA_G[ci].toFloat())
                 out.putFloat(MAGMA_B[ci].toFloat())
