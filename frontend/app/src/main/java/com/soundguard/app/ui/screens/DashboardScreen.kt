@@ -119,34 +119,6 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
                 accentColor = SirenAmber
             )
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            StatCard(
-                modifier    = Modifier.weight(1f),
-                icon        = Icons.Default.ShowChart,
-                iconTint    = Primary,
-                iconBg      = Color(0xFFEBF0FF),
-                value       = "96.8%",
-                label       = "Detection Accuracy",
-                trend       = "BestModel",
-                trendColor  = Primary,
-                accentColor = Primary
-            )
-            StatCard(
-                modifier    = Modifier.weight(1f),
-                icon        = Icons.Default.Timer,
-                iconTint    = SafeGreen,
-                iconBg      = SafeGreenBg,
-                value       = "12ms",
-                label       = "Avg. Inference",
-                trend       = "-3ms improved",
-                trendColor  = SafeGreen,
-                accentColor = SafeGreen
-            )
-        }
-
         // ── Live Classification Card ─────────────────────────
         SgCard(modifier = Modifier.fillMaxWidth(), topAccentColor = Primary) {
             SectionHeader("Live Classification")

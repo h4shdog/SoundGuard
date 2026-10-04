@@ -26,8 +26,6 @@ fun MonitorScreen() {
     val isDark      = isSystemDark()
     val bg          = if (isDark) DarkBackground else Background
     val context     = LocalContext.current
-    val activeModel = ModelType.BEST_MODEL
-
     val isRunning    = AlertRepository.isRunning
     val detection    = AlertRepository.current
     val errorMessage = AlertRepository.errorMessage
@@ -62,37 +60,6 @@ fun MonitorScreen() {
         Text("Real-time emergency sound classification",
             style = MaterialTheme.typography.bodyMedium,
             color = TextTertiary)
-
-        // ── Active Model Badge ─────────────────────────────────
-        SgCard(modifier = Modifier.fillMaxWidth()) {
-            Text("Active Model",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(10.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Primary.copy(alpha = 0.1f))
-                    .border(1.dp, Primary, RoundedCornerShape(10.dp))
-                    .padding(horizontal = 14.dp, vertical = 10.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Icon(Icons.Default.Psychology, null, tint = Primary, modifier = Modifier.size(18.dp))
-                    Text(activeModel.displayName,
-                        style = MaterialTheme.typography.labelLarge,
-                        color = Primary,
-                        fontWeight = FontWeight.SemiBold)
-                    Spacer(Modifier.weight(1f))
-                    Text(activeModel.fileName,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = TextTertiary)
-                }
-            }
-        }
 
         // ── Error Banner ───────────────────────────────────────
         if (errorMessage != null) {

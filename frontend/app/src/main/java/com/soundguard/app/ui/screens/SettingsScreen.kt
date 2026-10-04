@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
-import com.soundguard.app.data.ModelType
 import com.soundguard.app.ui.components.*
 import com.soundguard.app.ui.theme.*
 
@@ -38,39 +37,6 @@ fun SettingsScreen() {
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         Text("Settings", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.ExtraBold)
-
-        // ── Model Configuration ───────────────────────────
-        SettingsSection(title = "Model Configuration", icon = Icons.Default.Psychology) {
-
-            // Active model (single, fixed)
-            Text("Active Model", style = MaterialTheme.typography.labelMedium, color = TextTertiary)
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(Primary.copy(alpha = 0.1f))
-                    .border(1.dp, Primary, RoundedCornerShape(10.dp))
-                    .padding(horizontal = 14.dp, vertical = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Icon(Icons.Default.Psychology, null, tint = Primary, modifier = Modifier.size(18.dp))
-                Text(
-                    ModelType.BEST_MODEL.displayName,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Primary,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(
-                    ModelType.BEST_MODEL.fileName,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = TextTertiary
-                )
-            }
-
-            Spacer(Modifier.height(4.dp))
-        }
 
         // ── Alert Configuration ───────────────────────────
         SettingsSection(title = "Alert Configuration", icon = Icons.Default.NotificationsActive) {
