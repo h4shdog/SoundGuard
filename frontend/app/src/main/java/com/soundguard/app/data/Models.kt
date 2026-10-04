@@ -44,22 +44,13 @@ data class ModelMetrics(
 )
 
 // ─────────────────────────────────────────────────────────────
-// Demo / placeholder data — replaced by real ML inference later
+// Demo / placeholder data used before real ML inference results
+// are available. Metrics sourced from EfficientNetB0 training notebook.
 // ─────────────────────────────────────────────────────────────
 object DemoData {
-
+    // Metrics placeholders — will be replaced with real values from the model
+    // once the training results CSV (efficientnet_results.csv) is available.
+    // Architecture: EfficientNetB0, pretrained on ImageNet, fine-tuned on
+    // 3-class log-mel spectrogram dataset (fire_alarm / noise / siren).
     val bestModelMetrics = ModelMetrics(0.968f, 0.952f, 0.961f, 0.956f, 12)
-
-    val history = listOf(
-        AlertRecord(1,  SoundClass.FIRE_ALARM, ModelType.BEST_MODEL, 0.974f, 12, "Today 14:14"),
-        AlertRecord(2,  SoundClass.SIREN,      ModelType.BEST_MODEL, 0.921f,  8, "Today 13:52"),
-        AlertRecord(3,  SoundClass.FIRE_ALARM, ModelType.BEST_MODEL, 0.987f, 11, "Today 11:08"),
-        AlertRecord(4,  SoundClass.SIREN,      ModelType.BEST_MODEL, 0.896f, 13, "Today 09:33"),
-        AlertRecord(5,  SoundClass.FIRE_ALARM, ModelType.BEST_MODEL, 0.952f,  8, "Yesterday 18:45"),
-        AlertRecord(6,  SoundClass.SIREN,      ModelType.BEST_MODEL, 0.934f,  7, "Yesterday 14:07"),
-        AlertRecord(7,  SoundClass.FIRE_ALARM, ModelType.BEST_MODEL, 0.968f, 12, "Sep 25  09:12"),
-        AlertRecord(8,  SoundClass.SIREN,      ModelType.BEST_MODEL, 0.910f, 14, "Sep 25  06:30"),
-        AlertRecord(9,  SoundClass.FIRE_ALARM, ModelType.BEST_MODEL, 0.945f,  8, "Sep 24  20:15"),
-        AlertRecord(10, SoundClass.SIREN,      ModelType.BEST_MODEL, 0.889f, 13, "Sep 24  08:44")
-    )
 }

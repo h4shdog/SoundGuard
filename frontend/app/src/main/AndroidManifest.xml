@@ -29,7 +29,8 @@
         <service
             android:name=".service.SoundMonitorService"
             android:foregroundServiceType="microphone"
-            android:exported="false" />
+            android:exported="false"
+            android:stopWithTask="false" />
 
     </application>
 

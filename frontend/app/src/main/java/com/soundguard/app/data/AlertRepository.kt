@@ -9,56 +9,93 @@ import java.util.Date
 import java.util.Locale
 
 /**
- * In-memory singleton that holds the detection history and the current
- * live detection result.  Both the foreground service and the UI read/write
- * through this object so they stay in sync regardless of which screen is
- * open or whether the app is in the foreground.
+ * In-memory singleton shared between the foreground service and the UI.
+ *
+ * All Compose snapshot-state writes are dispatched to the main thread so
+ * observers are always notified on the correct thread, regardless of which
+ * coroutine dispatcher the service is running on.
  */
 object AlertRepository {
 
-    // ── Live history (most-recent first) ─────────────────────
+    // ── Live detection history (most-recent first) ────────────
     val history = mutableStateListOf<AlertRecord>()
 
-    // ── Current detection (null = idle) ──────────────────────
+    // ── Current live detection result (null = idle / not started) ─
     private var _current by mutableStateOf<DetectionResult?>(null)
     val current: DetectionResult? get() = _current
 
-    // ── Service running state ─────────────────────────────────
+    // ── Service running flag ──────────────────────────────────
     private var _isRunning by mutableStateOf(false)
     val isRunning: Boolean get() = _isRunning
 
+    // ── Error message (null = no error) ──────────────────────
+    private var _errorMessage by mutableStateOf<String?>(null)
+    val errorMessage: String? get() = _errorMessage
+
     private var nextId = 1
+    private val mainHandler = android.os.Handler(android.os.Looper.getMainLooper())
 
     // ─────────────────────────────────────────────────────────
+
     fun setRunning(running: Boolean) {
-        _isRunning = running
-        if (!running) _current = null
+        mainHandler.post {
+            _isRunning = running
+            if (!running) {
+                _current = null
+            }
+        }
     }
 
+    /**
+     * Called by the service after every inference window.
+     * Only fire alarm and siren detections are persisted to [history].
+     */
     fun postDetection(result: DetectionResult) {
-        _current = result
+        mainHandler.post {
+            _current      = result
+            _errorMessage = null   // clear any previous error on successful inference
 
-        // Only record emergency detections (fire alarm / siren) in history
-        if (result.isEmergency) {
-            val record = AlertRecord(
-                id          = nextId++,
-                soundClass  = result.soundClass,
-                model       = result.model,
-                confidence  = result.confidence,
-                inferenceMs = result.inferenceMs,
-                timestamp   = formatNow()
-            )
-            history.add(0, record)   // newest first
+            // Record emergency detections (fire alarm / siren) in history
+            if (result.isEmergency) {
+                history.add(
+                    0,
+                    AlertRecord(
+                        id          = nextId++,
+                        soundClass  = result.soundClass,
+                        model       = result.model,
+                        confidence  = result.confidence,
+                        inferenceMs = result.inferenceMs,
+                        timestamp   = formatNow()
+                    )
+                )
+            }
+        }
+    }
+
+    /**
+     * Called by the service when a non-recoverable error occurs
+     * (e.g. model failed to load, AudioRecord not initialized).
+     * Pass null to clear a previous error message.
+     */
+    fun postError(message: String?) {
+        mainHandler.post {
+            _errorMessage = message
+            if (message != null) {
+                _isRunning = false
+                _current   = null
+            }
         }
     }
 
     fun clear() {
-        history.clear()
-        _current  = null
-        _isRunning = false
+        mainHandler.post {
+            history.clear()
+            _current      = null
+            _isRunning    = false
+            _errorMessage = null
+        }
     }
 
-    private fun formatNow(): String {
-        return SimpleDateFormat("MMM dd  HH:mm", Locale.getDefault()).format(Date())
-    }
+    private fun formatNow(): String =
+        SimpleDateFormat("MMM dd  HH:mm", Locale.getDefault()).format(Date())
 }

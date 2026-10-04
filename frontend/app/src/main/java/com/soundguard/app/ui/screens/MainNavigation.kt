@@ -85,7 +85,13 @@ fun MainNavigation() {
             enterTransition  = { fadeIn() + slideInHorizontally { it / 10 } },
             exitTransition   = { fadeOut() }
         ) {
-            composable(Screen.Dashboard.route) { DashboardScreen(onNavigate = { navController.navigate(it) }) }
+            composable(Screen.Dashboard.route) { DashboardScreen(onNavigate = { route ->
+                navController.navigate(route) {
+                    popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                    launchSingleTop = true
+                    restoreState    = true
+                }
+            }) }
             composable(Screen.Monitor.route)   { MonitorScreen()   }
             composable(Screen.History.route)   { HistoryScreen()   }
             composable(Screen.Settings.route)  { SettingsScreen()  }

@@ -23,17 +23,10 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
     val isDark = isSystemDark()
     val bg     = if (isDark) DarkBackground else Background
 
-    // Live data from repository — reacts to service detections
-    val isRunning  = AlertRepository.isRunning
+    // Live data from repository — Compose snapshot state, recomposes automatically
+    val isRunning        = AlertRepository.isRunning
     val currentDetection = AlertRepository.current
         ?: DetectionResult(SoundClass.BACKGROUND, 0f, 0, ModelType.BEST_MODEL, false)
-
-    // Tick to force recomposition on each detection update
-    var tick by remember { mutableIntStateOf(0) }
-    LaunchedEffect(Unit) {
-        while (true) { kotlinx.coroutines.delay(500); tick++ }
-    }
-    @Suppress("UNUSED_EXPRESSION") tick
 
     val recentAlerts = AlertRepository.history.take(4)
     val fireCount    = AlertRepository.history.count { it.soundClass == SoundClass.FIRE_ALARM }
@@ -207,12 +200,17 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
 
             Spacer(Modifier.height(14.dp))
 
-            // Probability bars
-            ConfidenceBar("Fire Alarm", 0.03f, FireRed)
+            // Probability bars — live per-class scores from model
+            // allScores order: [0]=Fire Alarm, [1]=Background, [2]=Siren
+            val fireScore  = if (currentDetection.allScores.size > 0) currentDetection.allScores[0] else 0f
+            val bgScore    = if (currentDetection.allScores.size > 1) currentDetection.allScores[1] else 0f
+            val sirenScore = if (currentDetection.allScores.size > 2) currentDetection.allScores[2] else 0f
+
+            ConfidenceBar("Fire Alarm", fireScore,  FireRed)
             Spacer(Modifier.height(6.dp))
-            ConfidenceBar("Siren",      0.08f, SirenAmber)
+            ConfidenceBar("Siren",      sirenScore, SirenAmber)
             Spacer(Modifier.height(6.dp))
-            ConfidenceBar("Background", 0.89f, SafeGreen)
+            ConfidenceBar("Background", bgScore,    SafeGreen)
         }
 
         // ── Quick Actions ─────────────────────────────────────

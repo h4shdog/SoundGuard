@@ -32,7 +32,7 @@ fun ModelScreen() {
     ) {
         Text("Model Info", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.ExtraBold)
         Text(
-            "BestModel · Log-Mel Spectrogram",
+            "EfficientNetB0 · Log-Mel Spectrogram · 3-Class",
             style = MaterialTheme.typography.bodyMedium,
             color = TextTertiary
         )
@@ -95,14 +95,17 @@ fun ModelScreen() {
             Text("Log-Mel Spectrogram Parameters", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(10.dp))
             val params = listOf(
+                // Values from DataPreprocessing_Hashiras training notebook
                 "Sample Rate"    to "16 kHz",
-                "FFT Window"     to "2048",
+                "FFT Window"     to "1024",
                 "Hop Length"     to "512",
                 "Mel Freq. Bins" to "128",
+                "Freq. Min"      to "50 Hz",
+                "Freq. Max"      to "8000 Hz",
+                "Log Compress"   to "power_to_db (ref=max)",
+                "Window Type"    to "Hann",
                 "Input Size"     to "224 × 224 × 3",
-                "Window Type"    to "Hamming",
-                "Log Compress"   to "log1p",
-                "Normalization"  to "[-1, 1]"
+                "Normalization"  to "librosa.util.normalize"
             )
             params.forEachIndexed { i, (k, v) ->
                 Row(
@@ -144,6 +147,51 @@ fun ModelScreen() {
                     }
                 }
                 Spacer(Modifier.height(6.dp))
+            }
+        }
+
+        // ── Dataset Summary ───────────────────────────────
+        SgCard(modifier = Modifier.fillMaxWidth()) {
+            Text("Training Dataset", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Spacer(Modifier.height(10.dp))
+            // Numbers from DataPreprocessing_Hashiras training notebook
+            val splits = listOf(
+                Triple("Train",      "2,762 samples", "fire_alarm: 695 · noise: 1372 · siren: 695"),
+                Triple("Validation", "504 samples",   "fire_alarm: 61  · noise: 294  · siren: 149"),
+                Triple("Test",       "506 samples",   "fire_alarm: 62  · noise: 294  · siren: 150")
+            )
+            splits.forEachIndexed { i, (split, count, detail) ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 7.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(split, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+                        Text(detail, style = MaterialTheme.typography.labelSmall, color = TextTertiary)
+                    }
+                    Text(count, style = MaterialTheme.typography.bodyMedium, color = Primary, fontWeight = FontWeight.Bold)
+                }
+                if (i < splits.size - 1) HorizontalDivider(color = if (isDark) DarkBorder else Border, thickness = 0.5.dp)
+            }
+            Spacer(Modifier.height(6.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (isDark) DarkSurfaceVar else SurfaceVar)
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(Icons.Default.Info, null, tint = Primary, modifier = Modifier.size(16.dp))
+                Text(
+                    "Fire alarm class was augmented (Shift, PitchShift, TimeStretch, GaussianNoise) to balance with siren samples.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = TextSecondary
+                )
             }
         }
 
