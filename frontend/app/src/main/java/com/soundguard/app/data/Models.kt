@@ -38,7 +38,10 @@ data class AlertRecord(
     val confidence  : Float,
     val inferenceMs : Int,
     val timestamp   : String,
-    val dismissed   : Boolean = false
+    val dismissed   : Boolean = false,
+    // Absolute path to the saved 4-second WAV clip that triggered this alert.
+    // Null if the file could not be written (e.g. storage full).
+    val audioPath   : String? = null
 )
 
 data class ModelMetrics(

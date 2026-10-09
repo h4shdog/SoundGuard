@@ -425,8 +425,15 @@ class SoundMonitorService : Service() {
                 )
 
                 // ── 10. Push result to UI ─────────────────────────────────
+                // For emergency detections, save the 4-second audio buffer as a
+                // WAV file so the user can play it back from the history screen.
+                val savedAudioPath: String? = if (isEmergency) {
+                    saveAudioClip(audio, topClass.label)
+                } else null
+
                 AlertRepository.postDetection(
-                    DetectionResult(topClass, topScore, inferMs, ModelType.BEST_MODEL, isEmergency, scores)
+                    DetectionResult(topClass, topScore, inferMs, ModelType.BEST_MODEL, isEmergency, scores),
+                    audioPath = savedAudioPath
                 )
 
                 // ── 11. Emergency alert ───────────────────────────────────
@@ -506,6 +513,64 @@ class SoundMonitorService : Service() {
                 out.putFloat(MAGMA_B[ci].toFloat())
             }
         }
+    }
+
+    // ── Save detected audio clip as WAV ───────────────────────
+    //
+    // Writes the normalised float audio (already linearised from the ring
+    // buffer) to a 16-bit mono PCM WAV file in the app's internal files dir.
+    // Returns the absolute path on success, or null if an error occurs.
+    // Files are stored as  alerts/alert_<label>_<timestamp>.wav
+    // and are cleaned up automatically when the user deletes a history record.
+
+    private fun saveAudioClip(audio: FloatArray, label: String): String? = try {
+        val dir = java.io.File(filesDir, "alerts").also { it.mkdirs() }
+        val ts  = System.currentTimeMillis()
+        val file = java.io.File(dir, "alert_${label.replace(" ", "_")}_$ts.wav")
+
+        val numSamples    = audio.size
+        val byteRate      = SR * 1 * 2          // sampleRate × channels × bytesPerSample
+        val dataChunkSize = numSamples * 2       // 2 bytes per 16-bit sample
+        val totalFileSize = 44 + dataChunkSize   // 44-byte WAV header + PCM data
+
+        java.io.FileOutputStream(file).use { fos ->
+            val buf = ByteBuffer.allocate(totalFileSize).order(ByteOrder.LITTLE_ENDIAN)
+
+            // ── RIFF header ────────────────────────────────
+            buf.put("RIFF".toByteArray(Charsets.US_ASCII))
+            buf.putInt(totalFileSize - 8)           // file size − 8
+            buf.put("WAVE".toByteArray(Charsets.US_ASCII))
+
+            // ── fmt  sub-chunk ─────────────────────────────
+            buf.put("fmt ".toByteArray(Charsets.US_ASCII))
+            buf.putInt(16)                           // sub-chunk size (PCM)
+            buf.putShort(1)                          // audio format: PCM
+            buf.putShort(1)                          // num channels: mono
+            buf.putInt(SR)                           // sample rate
+            buf.putInt(byteRate)                     // byte rate
+            buf.putShort(2)                          // block align (channels × bytesPerSample)
+            buf.putShort(16)                         // bits per sample
+
+            // ── data sub-chunk ─────────────────────────────
+            buf.put("data".toByteArray(Charsets.US_ASCII))
+            buf.putInt(dataChunkSize)
+
+            // ── PCM samples (float → int16) ────────────────
+            // audio[] is normalised to [-1, 1] by normalizeAmplitude().
+            // Scale to int16 range [-32768, 32767].
+            for (sample in audio) {
+                val s = (sample * 32767f).toInt().coerceIn(-32768, 32767).toShort()
+                buf.putShort(s)
+            }
+
+            fos.write(buf.array())
+        }
+
+        Log.i(TAG, "Saved audio clip: ${file.absolutePath}")
+        file.absolutePath
+    } catch (e: Exception) {
+        Log.e(TAG, "saveAudioClip failed: ${e.message}", e)
+        null
     }
 
     // ── Emergency alert ───────────────────────────────────────

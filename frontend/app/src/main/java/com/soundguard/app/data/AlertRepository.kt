@@ -49,8 +49,9 @@ object AlertRepository {
     /**
      * Called by the service after every inference window.
      * Only fire alarm and siren detections are persisted to [history].
+     * [audioPath] is the absolute path to the saved WAV clip (may be null).
      */
-    fun postDetection(result: DetectionResult) {
+    fun postDetection(result: DetectionResult, audioPath: String? = null) {
         mainHandler.post {
             _current      = result
             _errorMessage = null   // clear any previous error on successful inference
@@ -65,7 +66,8 @@ object AlertRepository {
                         model       = result.model,
                         confidence  = result.confidence,
                         inferenceMs = result.inferenceMs,
-                        timestamp   = formatNow()
+                        timestamp   = formatNow(),
+                        audioPath   = audioPath
                     )
                 )
             }
@@ -96,14 +98,20 @@ object AlertRepository {
         }
     }
 
-    /** Delete every record from history. */
+    /** Delete every record from history and their associated audio clips. */
     fun deleteAllHistory() {
-        mainHandler.post { history.clear() }
+        mainHandler.post {
+            history.forEach { it.audioPath?.let { p -> java.io.File(p).delete() } }
+            history.clear()
+        }
     }
 
-    /** Delete a single record by its id. */
+    /** Delete a single record by its id and its associated audio clip. */
     fun deleteRecord(id: Int) {
-        mainHandler.post { history.removeAll { it.id == id } }
+        mainHandler.post {
+            history.find { it.id == id }?.audioPath?.let { java.io.File(it).delete() }
+            history.removeAll { it.id == id }
+        }
     }
 
     private fun formatNow(): String =

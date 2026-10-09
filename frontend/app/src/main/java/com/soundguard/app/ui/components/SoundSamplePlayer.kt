@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleEventObserver
 
 /**
  * Compose-friendly MediaPlayer wrapper.
- * Uses a private backing state to avoid name clashes with MediaPlayer.isPlaying.
+ * Supports playback from both raw resources (@RawRes) and absolute file paths.
  */
 class SoundSamplePlayer(private val context: Context) {
 
@@ -21,28 +21,58 @@ class SoundSamplePlayer(private val context: Context) {
     private var _isPlaying by mutableStateOf(false)
     val isPlaying: Boolean get() = _isPlaying
 
-    // Expose currentRes so HistoryCard can check which clip is active
+    // Track what is currently loaded so the UI can check toggle state.
+    // One of these will be set; the other will be the sentinel value.
     var currentRes: Int = -1
         private set
+    var currentPath: String? = null
+        private set
 
-    /**
-     * If [resId] is already playing → stop.
-     * Otherwise → play [resId] (stops any current clip first).
-     */
+    // ── Raw resource playback ─────────────────────────────────
+
     fun toggle(@RawRes resId: Int) {
-        if (_isPlaying && currentRes == resId) {
-            stop()
-        } else {
-            play(resId)
-        }
+        if (_isPlaying && currentRes == resId) stop() else playRes(resId)
     }
 
-    private fun play(@RawRes resId: Int) {
+    private fun playRes(@RawRes resId: Int) {
         stop()
-        currentRes = resId
+        currentRes  = resId
+        currentPath = null
         val mp = MediaPlayer.create(context, resId)
+        startMp(mp)
+    }
+
+    // ── File path playback ────────────────────────────────────
+
+    /**
+     * Toggle playback of the WAV file at [path].
+     * If the same path is already playing it will be stopped.
+     */
+    fun togglePath(path: String) {
+        if (_isPlaying && currentPath == path) stop() else playPath(path)
+    }
+
+    private fun playPath(path: String) {
+        stop()
+        currentRes  = -1
+        currentPath = path
+        val mp = try {
+            MediaPlayer().apply {
+                setDataSource(path)
+                prepare()
+            }
+        } catch (e: Exception) {
+            _isPlaying = false
+            return
+        }
+        startMp(mp)
+    }
+
+    // ── Shared start logic ────────────────────────────────────
+
+    private fun startMp(mp: MediaPlayer?) {
         if (mp != null) {
-            mp.setOnCompletionListener { _isPlaying = false }
+            mp.setOnCompletionListener { _isPlaying = false; currentPath = null; currentRes = -1 }
             mp.start()
             mediaPlayer = mp
             _isPlaying = true
@@ -54,13 +84,11 @@ class SoundSamplePlayer(private val context: Context) {
     fun stop() {
         val mp = mediaPlayer
         if (mp != null) {
-            try {
-                if (mp.isPlaying) mp.stop()
-            } catch (_: Exception) { }
+            try { if (mp.isPlaying) mp.stop() } catch (_: Exception) { }
             mp.release()
         }
         mediaPlayer = null
-        _isPlaying = false
+        _isPlaying  = false
     }
 
     fun release() = stop()

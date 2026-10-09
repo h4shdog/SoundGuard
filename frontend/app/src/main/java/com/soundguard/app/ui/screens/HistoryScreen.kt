@@ -388,17 +388,42 @@ fun HistoryCard(
 
                 if (record.soundClass != SoundClass.BACKGROUND) {
                     Spacer(Modifier.height(12.dp))
+
+                    val path       = record.audioPath
+                    val hasAudio   = path != null
+                    val isThisPlaying = player.isPlaying && player.currentPath == path
+
                     OutlinedButton(
-                        onClick  = { /* add fire_alarm.mp3 / siren.mp3 to res/raw/ to enable */ },
-                        enabled  = false,
+                        onClick  = { if (hasAudio) player.togglePath(path!!) },
+                        enabled  = hasAudio,
                         modifier = Modifier.fillMaxWidth(),
                         shape    = RoundedCornerShape(10.dp),
-                        colors   = ButtonDefaults.outlinedButtonColors(disabledContentColor = TextTertiary),
-                        border   = BorderStroke(1.dp, TextTertiary.copy(alpha = 0.3f))
+                        colors   = ButtonDefaults.outlinedButtonColors(
+                            contentColor        = if (isThisPlaying) accentColor else TextSecondary,
+                            disabledContentColor = TextTertiary
+                        ),
+                        border = BorderStroke(
+                            1.dp,
+                            if (!hasAudio)       TextTertiary.copy(alpha = 0.3f)
+                            else if (isThisPlaying) accentColor
+                            else                 TextSecondary.copy(alpha = 0.5f)
+                        )
                     ) {
-                        Icon(Icons.Default.PlayArrow, null, modifier = Modifier.size(18.dp))
+                        Icon(
+                            if (isThisPlaying) Icons.Default.Stop else Icons.Default.PlayArrow,
+                            contentDescription = if (isThisPlaying) "Stop" else "Play",
+                            modifier = Modifier.size(18.dp)
+                        )
                         Spacer(Modifier.width(6.dp))
-                        Text("Play Sample", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.SemiBold)
+                        Text(
+                            when {
+                                !hasAudio      -> "No Recording Saved"
+                                isThisPlaying  -> "Stop"
+                                else           -> "Play Detected Audio"
+                            },
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
