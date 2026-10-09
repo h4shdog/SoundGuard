@@ -185,18 +185,21 @@ fun ConfidenceBar(
 // ─────────────────────────────────────────────────────────────
 @Composable
 fun SoundClassChip(soundClass: SoundClass) {
-    val (bg, fg, text) = when (soundClass) {
-        SoundClass.FIRE_ALARM  -> Triple(FireRedLight,    FireRed,    "🔥 Fire Alarm")
-        SoundClass.SIREN       -> Triple(SirenAmberLight, SirenAmber, "🚨 Siren")
-        SoundClass.BACKGROUND  -> Triple(Border,          TextSecondary, "🔊 Background")
+    val (bg, fg) = when (soundClass) {
+        SoundClass.FIRE_ALARM  -> Pair(FireRedLight,    FireRed)
+        SoundClass.SIREN       -> Pair(SirenAmberLight, SirenAmber)
+        SoundClass.BACKGROUND  -> Pair(Border,          TextSecondary)
     }
-    Box(
+    Row(
         modifier = Modifier
             .clip(RoundedCornerShape(999.dp))
             .background(bg)
-            .padding(horizontal = 10.dp, vertical = 4.dp)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text(text, style = MaterialTheme.typography.labelMedium, color = fg, fontWeight = FontWeight.SemiBold)
+        Icon(soundClass.icon, contentDescription = null, tint = fg, modifier = Modifier.size(14.dp))
+        Text(soundClass.label, style = MaterialTheme.typography.labelMedium, color = fg, fontWeight = FontWeight.SemiBold)
     }
 }
 

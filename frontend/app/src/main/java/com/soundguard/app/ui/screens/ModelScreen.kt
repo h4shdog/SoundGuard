@@ -140,7 +140,15 @@ fun ModelScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text(sc.emoji, fontSize = 22.sp)
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(fg.copy(alpha = 0.15f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(sc.icon, contentDescription = sc.label, tint = fg, modifier = Modifier.size(20.dp))
+                    }
                     Column(Modifier.weight(1f)) {
                         Text(sc.label, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = fg)
                         Text("Label: ${sc.dbLabel}", style = MaterialTheme.typography.labelSmall, color = fg.copy(alpha = 0.7f))

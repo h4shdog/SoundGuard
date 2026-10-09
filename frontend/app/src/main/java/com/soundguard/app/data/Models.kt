@@ -1,13 +1,19 @@
 package com.soundguard.app.data
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Campaign
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.VolumeUp
+import androidx.compose.ui.graphics.vector.ImageVector
+
 // ─────────────────────────────────────────────────────────────
 // Domain models
 // ─────────────────────────────────────────────────────────────
 
-enum class SoundClass(val label: String, val emoji: String, val dbLabel: Int) {
-    FIRE_ALARM("Fire Alarm",  "🔥", 1),
-    SIREN     ("Siren",       "🚨", 2),
-    BACKGROUND("Background",  "🔊", 3)
+enum class SoundClass(val label: String, val icon: ImageVector, val dbLabel: Int) {
+    FIRE_ALARM("Fire Alarm",  Icons.Default.LocalFireDepartment, 1),
+    SIREN     ("Siren",       Icons.Default.Campaign,            2),
+    BACKGROUND("Background",  Icons.Default.VolumeUp,            3)
 }
 
 enum class ModelType(val displayName: String, val fileName: String) {

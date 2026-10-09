@@ -96,6 +96,16 @@ object AlertRepository {
         }
     }
 
+    /** Delete every record from history. */
+    fun deleteAllHistory() {
+        mainHandler.post { history.clear() }
+    }
+
+    /** Delete a single record by its id. */
+    fun deleteRecord(id: Int) {
+        mainHandler.post { history.removeAll { it.id == id } }
+    }
+
     private fun formatNow(): String =
         SimpleDateFormat("MMM dd  HH:mm", Locale.getDefault()).format(Date())
 }

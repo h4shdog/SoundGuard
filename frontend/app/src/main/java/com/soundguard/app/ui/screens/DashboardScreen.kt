@@ -142,9 +142,11 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
                         .background(circleBg),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        currentDetection.soundClass.emoji,
-                        fontSize = 28.sp
+                    Icon(
+                        currentDetection.soundClass.icon,
+                        contentDescription = currentDetection.soundClass.label,
+                        tint = circleIcon,
+                        modifier = Modifier.size(30.dp)
                     )
                 }
 
@@ -254,24 +256,29 @@ fun EmergencyBanner(detection: DetectionResult) {
         infiniteRepeatable(tween(600), RepeatMode.Reverse),
         label = "alpha"
     )
-    val (bg, border, icon, title) = when (detection.soundClass) {
-        SoundClass.FIRE_ALARM -> arrayOf(FireRedBg, FireRed, "🔥", "FIRE ALARM DETECTED")
-        SoundClass.SIREN      -> arrayOf(SirenAmberBg, SirenAmber, "🚨", "SIREN DETECTED")
+    val (bg, border, title) = when (detection.soundClass) {
+        SoundClass.FIRE_ALARM -> Triple(FireRedBg,    FireRed,    "FIRE ALARM DETECTED")
+        SoundClass.SIREN      -> Triple(SirenAmberBg, SirenAmber, "SIREN DETECTED")
         else                  -> return
     }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(14.dp))
-            .background(bg as Color)
-            .border(1.5.dp, border as Color, RoundedCornerShape(14.dp))
+            .background(bg)
+            .border(1.5.dp, border, RoundedCornerShape(14.dp))
             .padding(14.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(icon as String, fontSize = 28.sp, modifier = Modifier.graphicsLayer(alpha = alpha))
+        Icon(
+            detection.soundClass.icon,
+            contentDescription = detection.soundClass.label,
+            tint = border,
+            modifier = Modifier.size(32.dp).graphicsLayer(alpha = alpha)
+        )
         Column(Modifier.weight(1f)) {
-            Text(title as String, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = border)
+            Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = border)
             Text(
                 "Confidence: ${(detection.confidence * 100).toInt()}% · ${detection.model.displayName} · ${detection.inferenceMs}ms",
                 style = MaterialTheme.typography.bodySmall,
