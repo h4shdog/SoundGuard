@@ -23,8 +23,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.soundguard.app.service.SoundMonitorService
 import com.soundguard.app.ui.screens.MainNavigation
+import com.soundguard.app.ui.screens.SplashScreen
 import com.soundguard.app.ui.theme.Primary
 import com.soundguard.app.ui.theme.SoundGuardTheme
 
@@ -53,6 +55,10 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install the system splash screen (shows the black window + logo icon
+        // defined in Theme.SoundGuard.Splash while Compose is still loading).
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -61,25 +67,32 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SoundGuardTheme {
-                MainNavigation()
+                // Controls whether the Compose splash is still visible.
+                var showSplash by remember { mutableStateOf(true) }
 
-                when (permissionState.value) {
-                    null -> {
-                        // First launch: show our rationale dialog, then trigger OS dialog
-                        PermissionRationaleDialog(
-                            onContinue = {
-                                permissionState.value = false  // updated by launcher callback
-                                permissionLauncher.launch(requiredPermissions)
-                            }
-                        )
+                if (showSplash) {
+                    SplashScreen(onFinished = { showSplash = false })
+                } else {
+                    MainNavigation()
+
+                    when (permissionState.value) {
+                        null -> {
+                            // First launch: show our rationale dialog, then trigger OS dialog
+                            PermissionRationaleDialog(
+                                onContinue = {
+                                    permissionState.value = false  // updated by launcher callback
+                                    permissionLauncher.launch(requiredPermissions)
+                                }
+                            )
+                        }
+                        false -> {
+                            // User denied: show non-dismissable explanation and retry button
+                            PermissionDeniedDialog(
+                                onRetry = { permissionLauncher.launch(requiredPermissions) }
+                            )
+                        }
+                        true -> { /* granted — nothing to show */ }
                     }
-                    false -> {
-                        // User denied: show non-dismissable explanation and retry button
-                        PermissionDeniedDialog(
-                            onRetry = { permissionLauncher.launch(requiredPermissions) }
-                        )
-                    }
-                    true -> { /* granted — nothing to show */ }
                 }
             }
         }
@@ -160,7 +173,12 @@ private fun PermissionDeniedDialog(onRetry: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("🎤", fontSize = 40.sp)
+                Icon(
+                    Icons.Default.Mic,
+                    contentDescription = null,
+                    tint = Primary,
+                    modifier = Modifier.size(48.dp)
+                )
                 Text(
                     "Permission Required",
                     style = MaterialTheme.typography.titleLarge,

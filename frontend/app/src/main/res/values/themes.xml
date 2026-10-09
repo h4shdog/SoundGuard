@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- Base app theme — no action bar -->
     <style name="Theme.SoundGuard" parent="android:Theme.DeviceDefault.NoActionBar" />
+
+    <!--
+        Splash screen theme (androidx.core:core-splashscreen).
+        Applied to MainActivity via android:theme in the manifest.
+        The activity transitions away from this theme after installSplashScreen()
+        returns, leaving a seamless black → app transition.
+    -->
+    <style name="Theme.SoundGuard.Splash" parent="Theme.SplashScreen">
+        <!-- Solid black window background -->
+        <item name="windowSplashScreenBackground">#000000</item>
+        <!-- White logo icon (must be an adaptive icon or vector drawable) -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <!-- Keep the icon at its natural size (no extra scaling) -->
+        <item name="windowSplashScreenIconBackgroundColor">#000000</item>
+        <!-- Theme to switch to once the splash screen exits -->
+        <item name="postSplashScreenTheme">@style/Theme.SoundGuard</item>
+    </style>
+
 </resources>
