@@ -2,6 +2,7 @@ package com.soundguard.app.ui.screens
 
 import android.content.Intent
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -82,14 +83,13 @@ fun MainNavigation() {
                     modifier = Modifier
                         .size(44.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color.White.copy(alpha = 0.15f)),
+                        .background(Color.Black),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        Icons.Default.GraphicEq,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(26.dp)
+                    Image(
+                        painter            = androidx.compose.ui.res.painterResource(id = com.soundguard.app.R.drawable.ic_hearmergency_logo),
+                        contentDescription = "Hearmergency",
+                        modifier           = Modifier.size(40.dp)
                     )
                 }
                 Column {

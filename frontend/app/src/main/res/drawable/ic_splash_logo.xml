@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Hearmergency splash logo — sound-wave / graphic equaliser bars.
-    Rendered white on the black splash background.
-    Sized for the Android splash screen icon layer (108 × 108 dp safe zone).
+    System splash screen icon (androidx.core:core-splashscreen).
+    Same geometry as ic_launcher_foreground — 108×108 canvas.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -10,34 +9,83 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Bar 1 (leftmost, short) -->
+    <!-- EAR OUTLINE -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M28,52 L28,56 Q28,58 30,58 L34,58 Q36,58 36,56 L36,52 Q36,50 34,50 L30,50 Q28,50 28,52 Z" />
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+          M 50,82
+          C 44,82 39,77 39,71
+          C 39,60 44,50 49,44
+          C 54,39 60,37 65,37
+          C 75,37 83,45 83,55
+          C 83,63 78,69 71,72
+          C 68,73 66,76 66,79
+          C 66,82 64,85 61,85
+          C 56,85 52,82 51,79
+          C 50,78 50,82 50,82 Z" />
 
-    <!-- Bar 2 (medium-tall) -->
+    <!-- INNER CANAL -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M40,38 L40,56 Q40,58 42,58 L46,58 Q48,58 48,56 L48,38 Q48,36 46,36 L42,36 Q40,36 40,38 Z" />
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+          M 58,56
+          C 58,52 60,50 64,50
+          C 68,50 70,53 70,56
+          C 70,60 67,63 64,66
+          C 61,69 58,72 58,76
+          C 58,78 59,79 62,79" />
 
-    <!-- Bar 3 (tallest, centre) -->
+    <!-- CANAL DOT -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M52,28 L52,56 Q52,58 54,58 L58,58 Q60,58 60,56 L60,28 Q60,26 58,26 L54,26 Q52,26 52,28 Z" />
+        android:pathData="M 64,50 m -3,0 a 3,3 0 1,0 6,0 a 3,3 0 1,0 -6,0" />
 
-    <!-- Bar 4 (medium) -->
+    <!-- ARC 1 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M64,42 L64,56 Q64,58 66,58 L70,58 Q72,58 72,56 L72,42 Q72,40 70,40 L66,40 Q64,40 64,42 Z" />
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:pathData="M 56,42 A 10,10 0 0,0 56,58" />
 
-    <!-- Bar 5 (rightmost, short) -->
+    <!-- ARC 2 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M76,50 L76,56 Q76,58 78,58 L82,58 Q84,58 84,56 L84,50 Q84,48 82,48 L78,48 Q76,48 76,50 Z" />
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:pathData="M 50,36 A 17,17 0 0,0 50,65" />
 
-    <!-- Baseline -->
+    <!-- ARC 3 -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M26,62 L82,62 Q84,62 84,64 L84,66 Q84,68 82,68 L26,68 Q24,68 24,66 L24,64 Q24,62 26,62 Z" />
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:pathData="M 44,30 A 24,24 0 0,0 44,71" />
+
+    <!-- PULSE LINE -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#AAAAAA"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+          M 71,50
+          L 75,50
+          L 77,45
+          L 80,56
+          L 82,45
+          L 84,50
+          L 90,50" />
 
 </vector>

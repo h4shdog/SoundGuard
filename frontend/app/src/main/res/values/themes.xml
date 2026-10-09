@@ -13,9 +13,9 @@
     <style name="Theme.SoundGuard.Splash" parent="Theme.SplashScreen">
         <!-- Solid black window background -->
         <item name="windowSplashScreenBackground">#000000</item>
-        <!-- White logo icon (must be an adaptive icon or vector drawable) -->
+        <!-- Hearmergency ear+pulse logo -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
-        <!-- Keep the icon at its natural size (no extra scaling) -->
+        <!-- Black icon background so the white paths are visible -->
         <item name="windowSplashScreenIconBackgroundColor">#000000</item>
         <!-- Theme to switch to once the splash screen exits -->
         <item name="postSplashScreenTheme">@style/Theme.SoundGuard</item>
