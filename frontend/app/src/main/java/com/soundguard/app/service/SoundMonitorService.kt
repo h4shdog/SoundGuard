@@ -512,8 +512,8 @@ class SoundMonitorService : Service() {
 
     private fun sendEmergencyAlert(soundClass: SoundClass, confidence: Float) {
         val title = when (soundClass) {
-            SoundClass.FIRE_ALARM -> "Fire Alarm Detected!"
-            SoundClass.SIREN      -> "Siren Detected!"
+            SoundClass.FIRE_ALARM -> "Possible Fire Alarm Detected!"
+            SoundClass.SIREN      -> "Possible Siren Detected!"
             else                  -> return
         }
         val pi = PendingIntent.getActivity(

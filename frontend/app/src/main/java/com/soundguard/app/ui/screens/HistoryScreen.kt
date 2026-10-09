@@ -283,7 +283,8 @@ fun HistoryCard(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Text(
-                            record.soundClass.label,
+                            if (record.soundClass != SoundClass.BACKGROUND) "Possible ${record.soundClass.label}"
+                            else record.soundClass.label,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )

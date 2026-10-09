@@ -147,7 +147,8 @@ fun MonitorScreen() {
                             }
                             // Sound class name
                             Text(
-                                det.soundClass.label,
+                                if (det.isEmergency) "Possible ${det.soundClass.label}"
+                                else det.soundClass.label,
                                 style = MaterialTheme.typography.headlineSmall,
                                 fontWeight = FontWeight.ExtraBold
                             )

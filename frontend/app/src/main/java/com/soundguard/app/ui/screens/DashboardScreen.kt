@@ -152,7 +152,8 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
 
                 Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        currentDetection.soundClass.label,
+                        if (currentDetection.isEmergency) "Possible ${currentDetection.soundClass.label}"
+                        else currentDetection.soundClass.label,
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -257,8 +258,8 @@ fun EmergencyBanner(detection: DetectionResult) {
         label = "alpha"
     )
     val (bg, border, title) = when (detection.soundClass) {
-        SoundClass.FIRE_ALARM -> Triple(FireRedBg,    FireRed,    "FIRE ALARM DETECTED")
-        SoundClass.SIREN      -> Triple(SirenAmberBg, SirenAmber, "SIREN DETECTED")
+        SoundClass.FIRE_ALARM -> Triple(FireRedBg,    FireRed,    "POSSIBLE FIRE ALARM")
+        SoundClass.SIREN      -> Triple(SirenAmberBg, SirenAmber, "POSSIBLE SIREN")
         else                  -> return
     }
     Row(
@@ -336,8 +337,13 @@ fun AlertRow(record: AlertRecord) {
                 )
         )
         Column(Modifier.weight(1f)) {
-            Text(record.soundClass.label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
-            Text(record.timestamp,        style = MaterialTheme.typography.labelSmall,  color = TextTertiary)
+            Text(
+                if (record.soundClass != SoundClass.BACKGROUND) "Possible ${record.soundClass.label}"
+                else record.soundClass.label,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(record.timestamp, style = MaterialTheme.typography.labelSmall, color = TextTertiary)
         }
         Text(
             "${(record.confidence * 100).toInt()}%",
