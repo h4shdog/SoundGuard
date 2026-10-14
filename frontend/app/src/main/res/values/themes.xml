@@ -11,12 +11,9 @@
         returns, leaving a seamless black → app transition.
     -->
     <style name="Theme.SoundGuard.Splash" parent="Theme.SplashScreen">
-        <!-- Solid black window background -->
+        <!-- Solid black window background — matches the Compose splash so there's no visible flash -->
         <item name="windowSplashScreenBackground">#000000</item>
-        <!-- Hearmergency ear+pulse logo -->
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
-        <!-- Black icon background so the white paths are visible -->
-        <item name="windowSplashScreenIconBackgroundColor">#000000</item>
+        <!-- No icon: suppress the system splash screen icon entirely -->
         <!-- Theme to switch to once the splash screen exits -->
         <item name="postSplashScreenTheme">@style/Theme.SoundGuard</item>
     </style>

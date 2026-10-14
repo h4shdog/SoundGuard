@@ -55,9 +55,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Install the system splash screen (shows the black window + logo icon
-        // defined in Theme.SoundGuard.Splash while Compose is still loading).
-        installSplashScreen()
+        // Dismiss the system splash screen immediately — our Compose SplashScreen handles the intro.
+        installSplashScreen().setKeepOnScreenCondition { false }
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
