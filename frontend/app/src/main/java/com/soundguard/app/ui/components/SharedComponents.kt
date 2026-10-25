@@ -22,7 +22,7 @@ import com.soundguard.app.data.SoundClass
 import com.soundguard.app.ui.theme.*
 
 // ─────────────────────────────────────────────────────────────
-// SoundGuard Card
+// SoundGuard Card renamed to Hearmergency Card
 // ─────────────────────────────────────────────────────────────
 @Composable
 fun SgCard(

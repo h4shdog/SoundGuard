@@ -59,8 +59,8 @@ class SoundMonitorService : Service() {
         const val ACTION_STOP  = "com.soundguard.app.STOP"
 
         private const val TAG              = "SoundMonitorService"
-        private const val CHANNEL_ID       = "soundguard_monitor"
-        private const val ALERT_CHANNEL_ID = "soundguard_alert"
+        private const val CHANNEL_ID       = "hearmergency_monitor"
+        private const val ALERT_CHANNEL_ID = "hearmergency_alert"
         private const val NOTIF_ID         = 1
         private const val ALERT_NOTIF_ID   = 2
 
@@ -701,13 +701,13 @@ class SoundMonitorService : Service() {
     private fun createNotificationChannels() {
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL_ID, "SoundGuard Monitor", NotificationManager.IMPORTANCE_LOW).apply {
+            NotificationChannel(CHANNEL_ID, "Hearmergency Monitor", NotificationManager.IMPORTANCE_LOW).apply {
                 description = "Persistent notification while audio monitoring is active"
                 setShowBadge(false)
             }
         )
         nm.createNotificationChannel(
-            NotificationChannel(ALERT_CHANNEL_ID, "SoundGuard Alerts", NotificationManager.IMPORTANCE_HIGH).apply {
+            NotificationChannel(ALERT_CHANNEL_ID, "Hearmergency Alerts", NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "Fire alarm and siren detection alerts"
                 enableVibration(true)
                 enableLights(true)
@@ -722,7 +722,7 @@ class SoundMonitorService : Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SoundGuard")
+            .setContentTitle("Hearmergency")
             .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_btn_speak_now)
             .setContentIntent(pi)

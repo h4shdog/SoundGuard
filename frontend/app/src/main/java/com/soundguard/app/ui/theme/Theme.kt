@@ -36,13 +36,13 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun SoundGuardTheme(
+fun HearmergencyTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography  = SoundGuardTypography,
+        typography  = HearmergencyTypography,
         content     = content
     )
 }

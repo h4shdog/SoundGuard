@@ -49,7 +49,7 @@ fun DashboardScreen(onNavigate: (String) -> Unit) {
         ) {
             Column {
                 Text(
-                    "SoundGuard",
+                    "Hearmergency",
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold
                 )

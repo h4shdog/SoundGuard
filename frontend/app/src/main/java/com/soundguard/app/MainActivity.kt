@@ -28,7 +28,7 @@ import com.soundguard.app.service.SoundMonitorService
 import com.soundguard.app.ui.screens.MainNavigation
 import com.soundguard.app.ui.screens.SplashScreen
 import com.soundguard.app.ui.theme.Primary
-import com.soundguard.app.ui.theme.SoundGuardTheme
+import com.soundguard.app.ui.theme.HearmergencyTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
         permissionState.value = if (hasMicPermission()) true else null
 
         setContent {
-            SoundGuardTheme {
+            HearmergencyTheme {
                 // Controls whether the Compose splash is still visible.
                 var showSplash by remember { mutableStateOf(true) }
 
@@ -137,7 +137,7 @@ private fun PermissionRationaleDialog(onContinue: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    "SoundGuard needs continuous microphone access to detect fire alarms " +
+                    "Hearmergency needs continuous microphone access to detect fire alarms " +
                     "and sirens in real time — even when you are not actively using the app.\n\n" +
                     "On the next screen, please select \"While using the app\". " +
                     "A persistent notification will appear while monitoring is active.",
@@ -185,7 +185,7 @@ private fun PermissionDeniedDialog(onRetry: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    "SoundGuard cannot function without microphone access. " +
+                    "Hearmergency cannot function without microphone access. " +
                     "This app is designed to help people who are deaf or hard of hearing " +
                     "by detecting fire alarms and sirens and notifying them on their phone " +
                     "or watch.\n\nPlease grant microphone permission to continue.",
@@ -213,5 +213,5 @@ private fun PermissionDeniedDialog(onRetry: () -> Unit) {
 @androidx.compose.ui.tooling.preview.Preview(showBackground = true)
 @androidx.compose.runtime.Composable
 fun MainPreview() {
-    SoundGuardTheme { MainNavigation() }
+    HearmergencyTheme { MainNavigation() }
 }

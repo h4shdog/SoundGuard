@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Base app theme — no action bar -->
-    <style name="Theme.SoundGuard" parent="android:Theme.DeviceDefault.NoActionBar" />
+    <style name="Theme.Hearmergency" parent="android:Theme.DeviceDefault.NoActionBar" />
 
     <!--
         Splash screen theme (androidx.core:core-splashscreen).
@@ -10,12 +10,12 @@
         The activity transitions away from this theme after installSplashScreen()
         returns, leaving a seamless black → app transition.
     -->
-    <style name="Theme.SoundGuard.Splash" parent="Theme.SplashScreen">
+    <style name="Theme.Hearmergency.Splash" parent="Theme.SplashScreen">
         <!-- Solid black window background — matches the Compose splash so there's no visible flash -->
         <item name="windowSplashScreenBackground">#000000</item>
         <!-- No icon: suppress the system splash screen icon entirely -->
         <!-- Theme to switch to once the splash screen exits -->
-        <item name="postSplashScreenTheme">@style/Theme.SoundGuard</item>
+        <item name="postSplashScreenTheme">@style/Theme.Hearmergency</item>
     </style>
 
 </resources>

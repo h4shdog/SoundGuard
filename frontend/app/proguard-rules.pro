@@ -1,3 +1,3 @@
-# SoundGuard ProGuard rules
+# Hearmergency ProGuard rules
 -keepattributes *Annotation*
 -keep class com.soundguard.** { *; }
