@@ -252,6 +252,10 @@ private fun NavTabItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val isDark = isSystemDark()
+    val selectedColor   = if (isDark) Color.White        else Color.Black
+    val unselectedColor = if (isDark) Color(0xFF94A3B8)  else TextTertiary
+
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -266,14 +270,14 @@ private fun NavTabItem(
         Icon(
             icon,
             contentDescription = label,
-            tint = if (selected) Color.Black else TextTertiary,
+            tint = if (selected) selectedColor else unselectedColor,
             modifier = Modifier.size(22.dp)
         )
         Spacer(Modifier.height(2.dp))
         Text(
             label,
             style = MaterialTheme.typography.labelSmall,
-            color = if (selected) Color.Black else TextTertiary,
+            color = if (selected) selectedColor else unselectedColor,
             fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal
         )
     }
