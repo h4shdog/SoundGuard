@@ -204,7 +204,20 @@ fun SoundClassChip(soundClass: SoundClass) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Inline helper — detect dark theme without CompositionLocal
+// CompositionLocal for app-level dark mode override
+// ─────────────────────────────────────────────────────────────
+val LocalAppThemeMode = androidx.compose.runtime.compositionLocalOf { ThemeMode.SYSTEM }
+
+// ─────────────────────────────────────────────────────────────
+// Inline helper — resolves dark mode honouring user override
 // ─────────────────────────────────────────────────────────────
 @Composable
-fun isSystemDark(): Boolean = androidx.compose.foundation.isSystemInDarkTheme()
+fun isSystemDark(): Boolean {
+    val mode = LocalAppThemeMode.current
+    val systemDark = androidx.compose.foundation.isSystemInDarkTheme()
+    return when (mode) {
+        ThemeMode.LIGHT  -> false
+        ThemeMode.DARK   -> true
+        ThemeMode.SYSTEM -> systemDark
+    }
+}

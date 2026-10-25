@@ -5,7 +5,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
+import com.soundguard.app.ui.components.LocalAppThemeMode
 
 private val LightColors = lightColorScheme(
     primary          = Primary,
@@ -37,12 +39,20 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun HearmergencyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.SYSTEM,
     content: @Composable () -> Unit
 ) {
-    MaterialTheme(
-        colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography  = HearmergencyTypography,
-        content     = content
-    )
+    val systemDark = isSystemInDarkTheme()
+    val darkTheme = when (themeMode) {
+        ThemeMode.LIGHT  -> false
+        ThemeMode.DARK   -> true
+        ThemeMode.SYSTEM -> systemDark
+    }
+    CompositionLocalProvider(LocalAppThemeMode provides themeMode) {
+        MaterialTheme(
+            colorScheme = if (darkTheme) DarkColors else LightColors,
+            typography  = HearmergencyTypography,
+            content     = content
+        )
+    }
 }

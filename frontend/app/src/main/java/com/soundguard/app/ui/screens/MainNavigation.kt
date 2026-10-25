@@ -28,6 +28,9 @@ import com.soundguard.app.data.AlertRepository
 import com.soundguard.app.service.SoundMonitorService
 import com.soundguard.app.ui.components.isSystemDark
 import com.soundguard.app.ui.theme.*
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.BrightnessAuto
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object Dashboard : Screen("dashboard", "Dashboard", Icons.Default.Dashboard)
@@ -45,7 +48,7 @@ val bottomNavScreens = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigation() {
+fun MainNavigation(themeViewModel: ThemeViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     val navController = rememberNavController()
     val isDark        = isSystemDark()
     val context       = LocalContext.current
@@ -103,6 +106,24 @@ fun MainNavigation() {
                         "Fire Alarm and Siren Detection",
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White.copy(alpha = 0.7f)
+                    )
+                }
+
+                // Push toggle to the far right
+                Spacer(Modifier.weight(1f))
+
+                // Theme toggle button
+                val (themeIcon, themeDesc) = when (themeViewModel.themeMode) {
+                    ThemeMode.LIGHT  -> Icons.Default.LightMode  to "Switch to Dark Mode"
+                    ThemeMode.DARK   -> Icons.Default.DarkMode   to "Switch to System Mode"
+                    ThemeMode.SYSTEM -> Icons.Default.BrightnessAuto to "Switch to Light Mode"
+                }
+                IconButton(onClick = { themeViewModel.toggleTheme() }) {
+                    Icon(
+                        imageVector        = themeIcon,
+                        contentDescription = themeDesc,
+                        tint               = Color.White,
+                        modifier           = Modifier.size(22.dp)
                     )
                 }
             }

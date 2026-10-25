@@ -29,6 +29,8 @@ import com.soundguard.app.ui.screens.MainNavigation
 import com.soundguard.app.ui.screens.SplashScreen
 import com.soundguard.app.ui.theme.Primary
 import com.soundguard.app.ui.theme.HearmergencyTheme
+import com.soundguard.app.ui.theme.ThemeViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -65,14 +67,15 @@ class MainActivity : ComponentActivity() {
         permissionState.value = if (hasMicPermission()) true else null
 
         setContent {
-            HearmergencyTheme {
+            val themeViewModel: ThemeViewModel = viewModel()
+            HearmergencyTheme(themeMode = themeViewModel.themeMode) {
                 // Controls whether the Compose splash is still visible.
                 var showSplash by remember { mutableStateOf(true) }
 
                 if (showSplash) {
                     SplashScreen(onFinished = { showSplash = false })
                 } else {
-                    MainNavigation()
+                    MainNavigation(themeViewModel = themeViewModel)
 
                     when (permissionState.value) {
                         null -> {
