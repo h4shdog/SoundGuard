@@ -278,44 +278,13 @@ fun HistoryCard(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(3.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(
-                            if (record.soundClass != SoundClass.BACKGROUND) "Possible ${record.soundClass.label}"
-                            else record.soundClass.label,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(Color(0xFFEBF0FF))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                record.model.displayName,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Primary,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    }
+                    Text(
+                        if (record.soundClass != SoundClass.BACKGROUND) "Possible ${record.soundClass.label}"
+                        else record.soundClass.label,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                     Text(record.timestamp, style = MaterialTheme.typography.bodySmall, color = TextTertiary)
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text(
-                            "Confidence: ${(record.confidence * 100).toInt()}%",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = accentColor,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(
-                            "${record.inferenceMs}ms",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = TextTertiary
-                        )
-                    }
                 }
 
                 // Right side
@@ -378,12 +347,9 @@ fun HistoryCard(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    DetailStat("Confidence", "${(record.confidence * 100).toInt()}%", accentColor)
-                    DetailStat("Inference",  "${record.inferenceMs}ms",               TextTertiary)
-                    DetailStat("Model",      record.model.displayName,                Primary)
-                    DetailStat("Record #",   "#${record.id}",                         TextTertiary)
+                    DetailStat("Record #", "#${record.id}", TextTertiary)
                 }
 
                 if (record.soundClass != SoundClass.BACKGROUND) {
