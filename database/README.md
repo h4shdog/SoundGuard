@@ -1,6 +1,6 @@
-# SoundGuard — Database
+# Hearmergency — Database
 
-This folder will contain the database schema and migration files for the SoundGuard system.
+This folder will contain the database schema and migration files for the Hearmergency system.
 
 ## Planned Structure
 

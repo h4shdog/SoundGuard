@@ -1,6 +1,6 @@
-# SoundGuard — Backend
+# Hearmergency — Backend
 
-This folder will contain the server-side logic for the SoundGuard assistive alert system.
+This folder will contain the server-side logic for the Hearmergency assistive alert system.
 
 ## Planned Structure
 
